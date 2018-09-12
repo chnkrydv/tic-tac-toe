@@ -159,7 +159,7 @@ function onBoxClick() {
     var rowIdx = this.getAttribute("rowIdx");
     var colIdx = this.getAttribute("colIdx");
     
-    let successfulTurn = checkEmptyBox(colIdx, rowIdx);
+    let successfulTurn = fillCheckedBox(colIdx, rowIdx);
     if(successfulTurn) letComputerPlay();
 }
 
@@ -170,11 +170,10 @@ function letComputerPlay() {
     var rowId = value && value[0];
     var colId = value && value[1];
     
-    checkEmptyBox(rowId, colId);
+    fillCheckedBox(rowId, colId);
 }
 
-function checkEmptyBox(rowId, colId){
-    console.log(grid[rowId][colId])
+function fillCheckedBox(rowId, colId){
     if(someoneWon || grid[rowId][colId]) return false;
 
     let newValue = myTurn ? 1 : 2;
