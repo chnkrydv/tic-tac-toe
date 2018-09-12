@@ -41,7 +41,7 @@ function checkWin() {
     }
 }
 
-function announce() {}
+// function announce() {}
 
 function match(){
     let winning = 0;
@@ -161,6 +161,7 @@ function onBoxClick() {
     var colIdx = this.getAttribute("colIdx");
     
     checkEmptyBox(colIdx, rowIdx);
+    if(someoneWon) return;
     letComputerPlay();
 }
 
