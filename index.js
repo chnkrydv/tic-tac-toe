@@ -32,29 +32,17 @@ function toggleTurn() {
 
 function checkWin() {
     let win = match();
-    console.log(win);
     if(win) {
         let player = win === 1 ? 'Computer' : 'You'
         alert(player + ' won!!!');
-        location.reload();
         someoneWon = true;
     }
+    if(!emptyCells.length && !someoneWon) alert('No one won!!!  Refresh the page to play again.');
 }
-
-// function announce() {}
 
 function match(){
     let winning = 0;
-    let matchArr = [
-        [[0,0], [0,1], [0,2]],
-        [[1,0], [1,1], [1,2]],
-        [[2,0], [2,1], [2,2]],
-        [[0,0], [1,0], [2,0]],
-        [[0,1], [1,1], [2,1]],
-        [[0,2], [1,2], [2,2]],
-        [[0,0], [1,1], [2,2]],
-        [[0,2], [1,1], [2,0]],
-    ];
+    let matchArr = getMatchArray(grid);
 
     matchArr.forEach( (cas, i) => {
         let val = grid[cas[0][0]][cas[0][1]];
@@ -65,36 +53,47 @@ function match(){
     return winning;
 }
 
-/*this code took too much time so above is done
+// this getMatchArray function will work with any NxN dimention ticTacToe
+function getMatchArray(grid){
+    let length = grid.length;
 
-function horizontalMatch(array){
-    // let arr0 = [0,1,2];
-    // let arr1 = [3,4,5];
-    // let arr2 = [6,7,8];
-    let winRowIndex = 3;
-    console.log(grid)
-    grid.forEach( (row, i) => {
-        let countArr = row.reduce( (val, i) => {
-            if(!array[i]) return [];
+
     
-            if(i === 0) return [array[i]];
-            console.log(array[i])
+    // for horizontal and vertical match cases
+    let horArr = [];
+    let verArr = [];
+    for(let i=0; i<length; i++){
+        let horTemp = [];
+        let verTemp = [];
+        for(let j=0; j<length; j++){
+            horTemp.push([i, j]);
+            verTemp.push([j, i]);
+        }
+        horArr.push(horTemp);
+        verArr.push(verTemp);
+    }
+    // for horizontal and vertical match cases
 
-            if(array[i] === val[0]) return [...val, array[i]];
-            else return [];
-        }, []);
-        console.log(countArr)
-        let count = countArr && countArr.length;
-        if (count === 3) winRowIndex = i;;
-    });
-    return winRowIndex;
+
+    
+    // for diagonal match cases
+    let sum = length - 1;
+    let diagArr = [];
+    let diag1Temp = [];
+    let diag2Temp = [];
+    for(let i=0; i<length; i++){
+        for(let j=0; j<length; j++){
+            if(i===j) diag1Temp.push([i,j]);
+            if(i+j === sum) diag2Temp.push([i,j]);
+        }
+    }
+    diagArr.push(diag1Temp, diag2Temp);
+    // for diagonal match cases
+
+
+
+    return [...horArr, ...verArr, ...diagArr];
 }
-
-function verticalMatch(array){}
-
-function diagonalMatch(array){}
-
-*/
 
 function getEmptyCells() {
     let empty = [];
@@ -160,9 +159,8 @@ function onBoxClick() {
     var rowIdx = this.getAttribute("rowIdx");
     var colIdx = this.getAttribute("colIdx");
     
-    checkEmptyBox(colIdx, rowIdx);
-    if(someoneWon) return;
-    letComputerPlay();
+    let successfulTurn = checkEmptyBox(colIdx, rowIdx);
+    if(successfulTurn) letComputerPlay();
 }
 
 function letComputerPlay() {
@@ -175,7 +173,10 @@ function letComputerPlay() {
     checkEmptyBox(rowId, colId);
 }
 
-function checkEmptyBox(rowId, colId){    
+function checkEmptyBox(rowId, colId){
+    console.log(grid[rowId][colId])
+    if(someoneWon || grid[rowId][colId]) return false;
+
     let newValue = myTurn ? 1 : 2;
     grid[rowId][colId] = newValue;
     renderMainGrid();
@@ -183,8 +184,9 @@ function checkEmptyBox(rowId, colId){
     emptyCells = getEmptyCells();
     
     checkWin();
-    if(someoneWon) return;
     toggleTurn();
+
+    return true;
 }
 
 function addClickHandlers() {
