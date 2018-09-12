@@ -31,10 +31,6 @@ function toggleTurn() {
 }
 
 function checkWin() {
-    let arr = [];
-    for(let item of grid){
-        arr.push(...item)
-    }
     let win = match();
     console.log(win);
     if(win) {
@@ -43,9 +39,6 @@ function checkWin() {
         location.reload();
         someoneWon = true;
     }
-    // console.log(grid);
-    // let win = horizontalMatch(arr);
-    // if(win < 3) console.log('row ' + win + ' wins')
 }
 
 function announce() {}
